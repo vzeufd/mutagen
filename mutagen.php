@@ -2,7 +2,7 @@
 
 include('IXR_Library.inc.php');
 
-$ljClient = new IXR_Client('mutagen.ru', '/?xmlrpc');
+$ljClient = new IXR_Client('dev.mutagen.ru', '/?xmlrpc');
 
 $mutagen = new mutagen($ljClient);
 
@@ -10,8 +10,7 @@ $mutagen = new mutagen($ljClient);
 
 $ljClient->query('mutagen.login',"mail@mail.ru","password"); //
 $ljResponse = $ljClient->getResponse();
-print "ID "; print_r($ljResponse); print "<br>";
-
+print "авторизация ID "; print_r($ljResponse); print "<br>";
 
 // альтернативный вариант с паролем в md5
 //$ljClient->query('mutagen.login',"mail@mail.ru",md5("password"),"true"); //
@@ -34,6 +33,39 @@ print "конкуренция "; print_r($data); print "<br>";
 $data=$mutagen->suggest_create_task("mp3");
 $data=$mutagen->suggest_get_task($data["task_id"]);
 print "хвосты ";print_r($data); print "<br>";
+
+/*
+список парсеров
+
+wordstat_key - левая колонка вордстат, 40 страниц, 2000 ключей
+wordstat_key_50 - левая колонка вордстат, первая страница, 50 ключей.
+wordstat_n - частотность вордстат
+wordstat_q - частотность "вордстат".
+wordstat_qs - частотность !"вордстат".
+direct - биды директ
+*/
+$ljClient->query('mutagen.parser.get',"mp3","direct","2");
+$ljResponse = $ljClient->getResponse();
+print "-один запрос к парсеру direct в регионе 2 (Санкт-Петербург)"; print_r($ljResponse); print "<br>";
+
+$ljClient->query('mutagen.parser.get',"mp3","direct");
+$ljResponse = $ljClient->getResponse();
+print "-один запрос к парсеру direct без указания региона"; print_r($ljResponse); print "<br>";
+
+$ljClient->query('mutagen.parser.mass.new',array("mp3","mp3 скачать"),"wordstat_n",2,"проверка из api");
+$ljResponse = $ljClient->getResponse();
+print "-масс проверка создание "; print_r($ljResponse); print "<br>";
+
+
+$ljClient->query('mutagen.parser.mass.list');
+$ljResponse = $ljClient->getResponse();
+print "-список масс проверок "; print_r($ljResponse); print "<br>";
+
+$last_mass_id=key($ljResponse);
+
+$ljClient->query('mutagen.parser.mass.id',$last_mass_id);
+$ljResponse = $ljClient->getResponse();
+print "-масс проверка получение "; print_r($ljResponse); print "<br>";
 
 
 
