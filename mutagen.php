@@ -2,7 +2,7 @@
 
 include('IXR_Library.inc.php');
 
-$ljClient = new IXR_Client('mutagen.ru', '/?xmlrpc');
+$ljClient = new IXR_Client('mutagen.ru', '/xmlrpc');
 
 $mutagen = new mutagen($ljClient);
 
@@ -35,7 +35,7 @@ $data=$mutagen->suggest_get_task($data["task_id"]);
 print "хвосты ";print_r($data); print "<br>";
 
 /*
-список парсеров
+список парсеров вордстат
 
 wordstat_key - левая колонка вордстат, 40 страниц, 2000 ключей
 wordstat_key_50 - левая колонка вордстат, первая страница, 50 ключей.
@@ -68,6 +68,17 @@ $ljResponse = $ljClient->getResponse();
 print "-масс проверка получение "; print_r($ljResponse); print "<br>";
 
 
+# запрос к отчету Мега-инструмента
+$ljClient->query("mutagen.serp.report",[
+"region"=>"yandex_msk",
+"report"=>"report_keywords_organic",
+"domain"=>"mutagen.ru",
+"limit"=>10,
+]);
+
+$ljResponse = $ljClient->getResponse(); 
+print "10 фраз по которым сайт mutagen.ru находится в поиске в регионе yandex_msk<br>";
+print_r(json_decode($ljResponse,1));
 
 
 class mutagen{
