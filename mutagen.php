@@ -2,7 +2,7 @@
 
 include('IXR_Library.inc.php');
 
-$ljClient = new IXR_Client('mutagen.ru', '/xmlrpc');
+$ljClient = new IXR_Client('api.mutagen.ru', '/xmlrpc');
 
 $mutagen = new mutagen($ljClient);
 
